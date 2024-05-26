@@ -30,7 +30,7 @@ services:
 
   todoui-nuxt:
     build:
-      context: ./todolist
+      context: .
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
