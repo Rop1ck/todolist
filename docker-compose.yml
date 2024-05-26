@@ -11,6 +11,9 @@ services:
 
   todobackend-springboot:
     image: maeddes/todobackend-springboot:v2404
+    build:
+      context: ./todobackend-springboot
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     restart: unless-stopped
