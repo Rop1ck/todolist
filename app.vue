@@ -2,7 +2,6 @@
   <div>
     <h1>Todo-List</h1>
     <ul>
-      <li v-for="todo in todos" :key="todo">{{ todo }}</li>
       <li v-for="todo in todos" :key="todo">
         {{ todo }}
         <button @click="removeTodo(todo)">Remove</button>
@@ -42,8 +41,12 @@ async function addTodo() {
   if (!newTodo.value) return;
 
   try {
-    const response = await fetch(`${config.public.backendUrl}/${newTodo.value}`, {
-      method: 'POST'
+    const response = await fetch(`${config.public.backendUrl}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ todo: newTodo.value })
     });
     if (response.ok) {
       todos.value.push(newTodo.value);
