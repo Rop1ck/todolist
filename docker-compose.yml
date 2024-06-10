@@ -1,7 +1,14 @@
+version: '3.8'
+
+networks:
+  todonet:
+
 services:
 
   postgresdb:
     image: postgres
+    networks:
+      - todonet
     ports:
       - "5432:5432"
     environment:
@@ -11,9 +18,8 @@ services:
 
   todobackend-springboot:
     image: maeddes/todobackend-springboot:v2404
-    build:
-      context: ./todobackend-springboot
-      dockerfile: Dockerfile
+    networks:
+      - todonet
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -33,7 +39,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - todonet
     ports:
       - "3000:3000"
     environment:
-      - BACKEND_URL=http://localhost:8080
+      - BACKEND_URL=http://todobackend-springboot:8080
