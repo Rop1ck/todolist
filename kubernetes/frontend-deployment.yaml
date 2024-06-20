@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: todoui-nuxt
+  name: todoui-nuxt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todoui-nuxt
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: todoui-nuxt
+        tier: frontend
+    spec:
+      containers:
+      - image: barancal/todolist:v1.0
+        env:
+        - name: BACKEND_URL
+          value: "http://todobackend:8080"
+        name: lab
+        resources: {}
+status: {}
