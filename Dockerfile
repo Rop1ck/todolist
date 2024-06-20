@@ -1,33 +1,23 @@
-# syntax=docker/dockerfile:1
+# Verwende das Node-Image als Basis
+FROM node:16-alpine
 
-ARG NODE_VERSION=18.14.2
+# Erstelle ein Arbeitsverzeichnis
+WORKDIR /app
 
-FROM node:${NODE_VERSION}-slim as base
+# Kopiere die package.json und package-lock.json
+COPY package*.json ./
 
-ARG PORT=3000
+# Installiere die Abhängigkeiten
+RUN npm install
 
-ENV NODE_ENV=production
+# Kopiere den Rest des Anwendungsquellcodes
+COPY . .
 
-WORKDIR /src
-
-# Build stage
-FROM base as build
-
-COPY --link package.json package-lock.json ./
-RUN npm install --production=false
-
-COPY --link . .
-
+# Baue das Nuxt.js-Projekt für die Produktion
 RUN npm run build
-RUN npm prune --production
 
-# Run stage
-FROM base
+# Exponiere den Port, auf dem die App laufen wird
+EXPOSE 3000
 
-ENV PORT=$PORT
-
-COPY --from=build /src/.output /src/.output
-# Optional, only needed if you rely on unbundled dependencies
-# COPY --from=build /src/node_modules /src/node_modules
-
-CMD [ "node", ".output/server/index.mjs" ]
+# Starte die Anwendung
+CMD ["npm", "start"]

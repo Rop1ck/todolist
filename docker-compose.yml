@@ -10,35 +10,29 @@ services:
     networks:
       - todonet
     ports:
-      - "5432:5432"
+      - 5432:5432
     environment:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=matthias
       - POSTGRES_DB=mydb
 
   todobackend-springboot:
-    image: maeddes/todobackend-springboot:v2404
+    image: maeddes/todobackend-springboot:hse24
     networks:
       - todonet
+    build:
+      context: ./todobackend-springboot
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
     restart: unless-stopped
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcol:4317
-      - OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=otelcol:4317
-      - OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=grpc
-      - OTEL_EXPORTER_OTLP_METRICS_PROTOCOL=grpc
-      - OTEL_RESOURCE_ATTRIBUTES=service.name=todobackend-springboot
-      - OTEL_METRICS_EXPORTER=otlp,logging-otlp
-      - OTEL_LOGS_EXPORTER=none
     depends_on:
       - postgresdb
 
   todoui-nuxt:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: barancal/todolist:v1.0
     networks:
       - todonet
     ports:
